@@ -1,0 +1,177 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct ponto{
+    int x;
+    int y;
+}ponto;
+
+
+
+int main(){
+    /*\n;||(or) e &&(and)*/
+
+    //entrada
+    int n,m,s;
+    scanf("%d",&n);
+    scanf("%d",&m);
+    scanf("%d",&s);
+    int **matriz;
+    matriz = malloc(n * sizeof(int*));
+    for(int i = 0;i < n;i++){
+        matriz[i] = malloc(m * sizeof(int));
+    }
+    for(int i = 0;i < n;i++){
+        for(int j = 0;j < m;j++){
+            scanf("%d",&matriz[i][j]);
+        }
+    }
+    //
+    int q = 0;
+    ponto *termo;
+    //int *dimensao;
+
+    //
+    //codigo que checa quantas submatrizes quadradas de 1x1 ate nxn stisfazem a soma = s
+    int r = n;
+    int menor = n;
+    if(m < n){
+        menor = m;
+    }
+    /*int maior = m;
+    if(menor == m){
+        maior = n;
+    }*/
+    int pn= n;
+    int pm = m;
+    for(int sub = menor;sub >= 1;sub--){
+        int mover = menor - sub + 1;
+        //quanto vai mover para achar a submatriz
+        for(int a = 0;a < mover;a++){
+            for(int b = 0;b < mover;b++){
+                int soma = 0;
+                //indices em que vai se começar a procurar por submatrizes
+                for(int i = 0;i < pn;i++){//mudar n
+                    for(int j = 0;j < pm;j++){//mudar m
+                        if(matriz[i+a][j+b] == s && sub == 1){
+                            soma = matriz[i+a][j+b];
+                        }
+                        else if(sub != 1){
+                            soma += matriz[i+a][j+b];
+                        }
+
+                        //printf("esses: %d\n",matriz[i+a][j+b]);
+
+
+                    }
+                }
+                //printf("soma : %d\n",soma);
+                if(soma == s){
+                    if(sub <= r){
+                        r = sub;
+                    }
+                    q++;
+                }
+            }
+        }
+        pm--;
+        pn--;
+    }
+
+    //preciso devolver sub e (i,j)
+    termo = malloc(q * sizeof(ponto));
+    //dimensao = malloc(q * sizeof(int));
+    //
+    int w = 0;
+    pm = m;
+    pn = n;
+    for(int sub = menor;sub >= 1;sub--){
+        int mover = menor - sub + 1;
+        for(int a = 0;a < mover;a++){
+            for(int b = 0;b < mover;b++){
+                int soma = 0;
+                int xi,yj = -1;
+                int count = 0;
+                for(int i = 0;i < pn;i++){//
+                    for(int j = 0;j < pm;j++){//
+                        if(matriz[i+a][j+b] == s && sub == 1){
+                            soma = matriz[i+a][j+b];
+                            xi = i+a;
+                            yj = j+b;
+
+                        }
+                        else if(sub !=1){
+                            soma += matriz[i+a][j+b];
+                            if(count == 0){
+                                xi = i+a;
+                                yj = j+b;
+                                count++;
+                            }
+                        }
+
+                    }
+                }
+                //printf("%d%d->%d e soma : %d\n",xi,yj,matriz[xi][yj],soma);
+                if(soma == s){
+                    //printf("%d,%d",xi,yj);
+                    termo[w].x = xi;
+                    termo[w].y = yj;
+                    //dimensao[w] = sub;
+                    w++;
+                }
+            }
+        }
+        pm--;
+        pn--;
+    }
+
+
+    //ponto rtermo = termo[0];
+    //int rdim = dimensao[0];
+    //////////////////////
+
+    ///
+    int ord;
+    int abs;
+    for(int i = 1;i < n;i++){
+        if(termo[i].x < termo[0].x){
+            if(termo[i].y < termo[0].y){
+                ord = termo[i].x;
+                abs = termo[i].y;
+            }
+        }
+    }
+    //
+
+    /*for(int i = 1;i < n;i++){
+        if(dimensao[i] < rdim){
+            if(dimensao[i] < rdim){
+                rdim = dimensao[i];
+            }
+        }
+    }*/
+    //EU QUERO AMENOR DFIMENSAO
+
+    if(q == 0){
+        printf("nao ha'\n");
+    }
+    else{
+        printf("submatriz %d x %d em [%d,%d]\n",r,r,(ord)+1,(abs)+1);
+    }
+    //liberndo memoria
+    free(matriz);
+    //free(termo);
+    //free(dimensao);
+    //
+
+
+
+
+
+
+
+
+  return 0;
+
+}
